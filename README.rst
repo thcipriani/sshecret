@@ -2,7 +2,7 @@ SSHecret
 ========
 
 .. image:: https://photos.tylercipriani.com/thumbs/2f/ad8870548f45148167f0b41d6e0539/medium.jpg
-   :alt: Don't worry, I can keep a sshecret
+   :alt: Don't worry, I can keep a sshecret (photo credit: the Nationaal Archief, the Dutch National Archives, and Spaarnestad Photo, via Wikimedia Commons)
 
 If you have an encrypted ssh key for each domain you access (you should), and
 you keep your unlocked keys in a single ssh-agent (you maybe shouldn't),
@@ -73,3 +73,4 @@ that file is weird or nonexistent. Sorry, I guess.
   optional arguments:
     -h, --help  show this help message and exit
     -v          Increase verbosity of output
+
