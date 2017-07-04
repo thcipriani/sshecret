@@ -26,6 +26,13 @@ the key used for that domain will be affected.
 ``sshecret`` uses ``execve(2)`` to wrap ssh, modifying the environment to
 ensure that each key in your ``ssh_config(5)`` uses its own ssh-agent.
 
+Install
+-------
+
+Install via pip::
+
+    pip install --user sshecret
+
 Use with git
 ------------
 
