@@ -33,13 +33,21 @@ Install via pip::
 
     pip install --user sshecret
 
-Use with git
-------------
+Wherever ssh is accepted
+------------------------
 
 To use ``sshecret`` with git, point ``GIT_SSH`` to use ``sshecret`` by adding
 this to your shell initialization file (``~/.bashrc`` or the like)::
 
-    export GIT_SSH=sshecret
+    if command -v sshecret > /dev/null 2>&1; then
+        export GIT_SSH=sshecret
+    fi
+
+To use ``sshecret`` with scp add this alias to your shell initialization file::
+
+    if command -v sshecret > /dev/null 2>&1; then
+        alias scp='scp -S sshecret'
+    fi
 
 Limitations
 -----------
