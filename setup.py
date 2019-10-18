@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 setup sshecret.
@@ -31,7 +31,7 @@ with open(os.path.join(here, 'README.rst')) as f:
 
 setup(
     name='sshecret',
-    version='20170703',
+    version='20191018',
     description='ssh-agent key management wrapper',
     long_description=long_description,
     url='https://github.com/thcipriani/sshecret',
