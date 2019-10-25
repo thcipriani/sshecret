@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 #    Copyright (C) 2017 Tyler Cipriani
@@ -25,6 +25,7 @@ import errno
 import hashlib
 import logging
 import os
+from shlex import quote
 import subprocess
 import sys
 
@@ -32,7 +33,7 @@ import sys
 try:
     from paramiko import SSHConfig
 except ImportError:
-    print "[ERROR] sudo apt-get install python-paramiko"
+    print("[ERROR] sudo apt-get install python-paramiko")
     sys.exit(1)
 
 
@@ -44,7 +45,11 @@ ssh-agent(1)s each containing only a single ssh key.
 
 sshecret accepts the same parameters as ssh(1) - fundamentally sshecret uses
 execve(2) to wrap ssh, modifying the environment to ensure that each key in
-your ssh_config(5) uses its own ssh- agent.
+your ssh_config(5) uses its own ssh-agent.
+
+In order to retrieve the path to the socket for a given hostname, use:
+
+    sshecret --socket hostname
 '''
 
 
@@ -71,12 +76,16 @@ class SSHSock():
     def __init__(self, key):
         self.key = key
 
-    def _get_sock_path(self, checksum):
+    def get_sock_path(self):
         """
         Path for SSH socket files
         """
+        checksum = hashlib.md5()
+        checksum.update(self.key.file.encode("utf-8"))
+        hexdigest = checksum.hexdigest()
+
         sock = os.path.join(
-            os.getenv("XDG_RUNTIME_DIR"), "{}.sock".format(checksum))
+            os.getenv("XDG_RUNTIME_DIR"), "{}.sock".format(hexdigest))
         logging.debug("Sock path is: {}".format(sock))
         return sock
 
@@ -117,10 +126,7 @@ class SSHSock():
         if self.key.empty:
             return
 
-        checksum = hashlib.md5()
-        checksum.update(self.key.file)
-
-        sock_file = self._get_sock_path(checksum.hexdigest())
+        sock_file = self.get_sock_path()
         if not os.path.exists(sock_file):
             cmd = [
                 "/usr/bin/ssh-agent",
@@ -210,7 +216,7 @@ class SSHKey():
 def parse_known_args():
     """Parse commandline arguments."""
     parser = argparse.ArgumentParser(
-        usage='sshecret [whatever you want to pass to ssh]',
+        usage='sshecret [--socket] [whatever you want to pass to ssh]',
         description=DESCRIPTION,
         formatter_class=argparse.RawTextHelpFormatter)
     for flagname in SSH_FLAGS:
@@ -221,18 +227,23 @@ def parse_known_args():
 
     parser.add_argument('-v', action='count', dest="verbose",
                         help='Increase verbosity of output')
+
+    parser.add_argument('--socket', dest="sshecret_print_socket",
+                        action='store_true',
+                        help='print socket path for the given host')
+
     parser.add_argument('hostname', help=argparse.SUPPRESS)
     parser.add_argument('command', nargs='?', help=argparse.SUPPRESS)
     return parser.parse_known_args()
 
 
-def setup_logging(args):
+def setup_logging(verbose):
     """
     Setup logging level based on passed args.
     """
     level = logging.INFO
 
-    if args.verbose > 0:
+    if verbose > 0:
         level = logging.DEBUG
 
     logging.root.handlers = []
@@ -284,9 +295,21 @@ def main(args):
     #. Exec ssh
     """
     args, extra = parse_known_args()
-    setup_logging(args)
+
+    verbose = 0
+    if args.verbose:
+        verbose = args.verbose
+    setup_logging(verbose)
+
     host = get_host(args)
     sock = SSHSock(SSHKey(host))
+
+    # If other sshecret-specific arguments are added which don't do an early
+    # return before calling ssh(1), it may be necessary to filter sys.argv.
+    if args.sshecret_print_socket:
+        print('SSH_AUTH_SOCK={}'.format(quote(sock.get_sock_path())))
+        return
+
     run_ssh(sys.argv[1:], sock.create())
 
 
