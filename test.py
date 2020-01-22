@@ -2,10 +2,10 @@
 """
 Tests for sshecret
 """
-import os
 import unittest
 
 sshecret = __import__('sshecret')
+
 
 class TestGetHost(unittest.TestCase):
     """
@@ -51,7 +51,6 @@ class TestArgParse(unittest.TestCase):
         assert args.hostname == 'foo@example.com:2222'
         assert not extra
         assert args.sshecret_print_socket is True
-
 
 
 if __name__ == '__main__':
