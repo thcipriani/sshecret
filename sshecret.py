@@ -33,7 +33,7 @@ import sys
 try:
     from paramiko import SSHConfig
 except ImportError:
-    print("[ERROR] sudo apt-get install python-paramiko")
+    print("[ERROR] sudo apt-get install python3-paramiko")
     sys.exit(1)
 
 
