@@ -8,9 +8,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@722adc63f1aa60a57ec37892e133b1d319cae598
+    - uses: actions/checkout@v2
     - name: Set up Python 3.7
-      uses: actions/setup-python@28a6c1b915d5808acb3da49af7063544ebfbe085
+      uses: actions/setup-python@v2
       with:
         python-version: 3.7
     - name: Install dependencies
