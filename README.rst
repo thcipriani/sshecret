@@ -36,6 +36,14 @@ Install via pip::
 
     pip install --user sshecret
 
+Install manually / via APT:
+
+    apt-get install python3-paramiko
+
+    git clone https://github.com/thcipriani/sshecret/
+
+    cp sshecret.py /usr/local/bin/sshecret   
+    
 Wherever ssh is accepted
 ------------------------
 
